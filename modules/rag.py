@@ -1,0 +1,14 @@
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+class setup:
+    def __init__(self,model_name:str, documents):
+        self.model_name = model_name
+        self.documents = documents
+        
+        self.embeddings = HuggingFaceEmbeddings(model_name=model_name, model_kwargs={'device' : 'cpu'})
+        
+        self.vectorstore = FAISS.from_documents(documents, self.embeddings)
+        
+    def run(self):
+        return self.vectorstore.as_retriever()
