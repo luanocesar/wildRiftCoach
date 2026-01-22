@@ -6,6 +6,6 @@ langchain-core==1.2.7
 langchain-groq==1.1.1
 python-dotenv==1.2.1
 pydantic==2.12.5
-langchain-google-vertexai==3.2.1
-google-cloud-aiplatform==2.26.1
-langchain-google-genai==4.2.0
+langchain-google-vertexai
+google-cloud-aiplatform
+langchain-google-genai
