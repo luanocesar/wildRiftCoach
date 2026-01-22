@@ -1,21 +1,24 @@
-from dotenv import load_dotenv
-from langchain_groq import ChatGroq
 import os
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
+import llm as llm
 
-load_dotenv()
-api_key = os.getenv("GROQ_API_KEY")
+app = FastAPI()
 
-llm = ChatGroq(model_name="llama-3.1-8b-instant")
+class Prompt(BaseModel):
+    championName: str
 
-def main():
-    print("-- Oraculo Groq Conectado")
-    pergunta = input("Pergunta: ")
-    
-    try:
-        resposta = llm.invoke(pergunta)
-        print(f"\nGroq: {resposta.content}")
-    except Exception as e:
-        print(f"Falha : {e}")
-    
-if __name__ == "__main__":
-    main()
+@app.post("/llm")
+async def promptToLlm(prompt : Prompt | None = None):
+    if not prompt.championName or len(prompt.championName.strip()) == 0:
+        return {"response": "Por favor, informe o nome de um campeão."}
+        
+    answer = await llm.run_llm(prompt.championName)
+    return {"response": answer}
+
+try:
+    app.mount("/", StaticFiles(directory="frontend/wildriftcoach_fe/dist", html=True), name="static")
+    print("Server is Up")
+except Exception as e:
+    print(e)

@@ -26,7 +26,7 @@ PROMPT = PromptTemplate(
 
 rag_setup = rag.setup(settings.MODEL_RAG, documents)
 
-llm = ChatGroq(
+chat_llm = ChatGroq(
     temperature=0,
     model_name=settings.MODEL_CHAT,
     groq_api_key=settings.GROQ_API_KEY
@@ -38,20 +38,21 @@ memory = ConversationBufferMemory(
 )
 
 qa_chain = ConversationalRetrievalChain.from_llm(
-    llm=llm,
+    llm=chat_llm,
     retriever=rag_setup.run(),
     memory=memory,
     combine_docs_chain_kwargs={"prompt" : PROMPT}
 )
 
-def chat():
-    print("--- Agente com Memória e RAG Ativo ---")
-    while True:
-        pergunta = input("\nVocê: ")
-        if pergunta.lower() in ["sair", "exit"]: break
+async def run_llm(promptFromUser: str):
+    try:
+        resposta = qa_chain.invoke({"question": promptFromUser})
+        answer = resposta.get('answer', "Não foi possível processar a resposta.")
         
-        resposta = qa_chain.invoke({"question": pergunta})
-        print(f"IA: {resposta['answer']}")
-
-if __name__ == "__main__":
-    chat()
+        # Log para seu terminal de dev
+        print(f"User: {promptFromUser} | Bot: {answer[:50]}...")
+        
+        return answer
+    except Exception as e:
+        print(f"Erro na Chain: {e}")
+        return "Erro interno ao processar o conhecimento."
