@@ -1,12 +1,15 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = ""  # Disable CUDA
+
 from langchain_community.vectorstores import FAISS
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 class setup:
     def __init__(self,model_name:str, documents):
         self.model_name = model_name
         self.documents = documents
         
-        self.embeddings = GoogleGenerativeAIEmbeddings(model_name="models/text-embedding-004")
+        self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         
         self.vectorstore = FAISS.from_documents(documents, self.embeddings)
         

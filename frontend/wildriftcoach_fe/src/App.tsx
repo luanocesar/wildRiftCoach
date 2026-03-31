@@ -13,7 +13,11 @@ function App() {
   }
 
   const handleOnClick = () => {
-      fetch("http://localhost:8000/llm",{
+      const apiUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:8000/llm'
+        : `${window.location.origin}/llm`;
+      
+      fetch(apiUrl,{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,11 +40,16 @@ function App() {
       <Card title="Champion Build & Rune (By AI)" size="default">
       <p>{airesponse}</p>
     </Card>
-      <Space.Compact>
-      <Space.Addon>https://</Space.Addon>
-      <Input onChange={handleOnChange} prefix={<UserOutlined />} placeholder="input search text" allowClear />
-      </Space.Compact>
-      <Button onClick={handleOnClick} type="primary">Ask</Button>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Input 
+          onChange={handleOnChange} 
+          prefix={<UserOutlined />} 
+          placeholder="Enter champion name" 
+          allowClear 
+          onPressEnter={handleOnClick}
+        />
+        <Button onClick={handleOnClick} type="primary" block>Ask</Button>
+      </Space>
     </>
   )
 }

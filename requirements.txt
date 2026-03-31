@@ -9,3 +9,5 @@ pydantic==2.12.5
 langchain-google-vertexai
 google-cloud-aiplatform
 langchain-google-genai
+sentence-transformers
+langchain-huggingface
